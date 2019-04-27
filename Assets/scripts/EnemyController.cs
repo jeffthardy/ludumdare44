@@ -61,9 +61,7 @@ public class EnemyController : MonoBehaviour
         if (other.gameObject.tag == "Player")
         {
             Debug.Log("EnemyController detected player!");
-
-            other.gameObject.GetComponent<PlayerStatus>().modifyMoney(-hitCost);
-            other.gameObject.GetComponent<PlayerStatus>().inflictDamage();
+            other.gameObject.GetComponent<PlayerStatus>().inflictDamage(hitCost);
         }
 
         if (directive == 1)

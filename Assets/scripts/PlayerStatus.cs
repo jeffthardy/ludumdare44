@@ -11,38 +11,55 @@ public class PlayerStatus : MonoBehaviour
     private bool invulerable = false;
     public bool playerInShip = false;
 
+    private float timeWorked = 0;
+
     // Start is called before the first frame update
     void Start()
     {
         money = initialMoney;        
     }
 
+    // General money modifiers such as movement, time, etc use this 
     public void modifyMoney(float change)
     {
-        if((invulerable == true) && (change < 0))
-        {
-            //ignore
-
-        }
-        else
-            money += change;
+        money += change;
 
         // Dont allow random negatives when dying
         if (money < 0)
             money = 0;
     }
 
-    public void inflictDamage()
+    // Track time spent at job locations earning money
+    public void logWorkTime(float time)
     {
-        invulerable = true;
-        Invoke("ClearInvulerable", invulerableTime);
+        Debug.Log("We just worked " + time + " Seconds!");
+        timeWorked += time;
     }
 
+    // Might be needed for stats
+    public float getWorkTime(float time)
+    {
+        return timeWorked;
+    }
+
+    // Enemies can steal money, but leave you invulnerable for a bit afterwards
+    public void inflictDamage(float damage)
+    {
+        if (!invulerable)
+        {
+            modifyMoney(-damage);
+            invulerable = true;
+            Invoke("ClearInvulerable", invulerableTime);
+        }
+    }
+
+    // Timed call to this function will reallow damage
     private void ClearInvulerable()
     {
         invulerable = false;
     }
 
+    // Just in case something needs to know how much money we have
     public float getMoneyLevel()
     {
         return money;

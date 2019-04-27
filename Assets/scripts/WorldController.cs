@@ -15,6 +15,7 @@ public class WorldController : MonoBehaviour
     void Start()
     {
         playerRB = player.GetComponent<Rigidbody>();
+        Invoke("playerMoneyDrainer", 1.0f);
     }
 
     // Update is called once per frame
@@ -47,5 +48,11 @@ public class WorldController : MonoBehaviour
         if (player.GetComponent<PlayerStatus>().getMoneyLevel() <= 0)
             player.GetComponent<PlayerController>().alive = false;
 
+    }
+
+    void playerMoneyDrainer()
+    {
+        player.GetComponent<PlayerStatus>().modifyMoney(-1);
+        Invoke("playerMoneyDrainer", 0.5f);
     }
 }

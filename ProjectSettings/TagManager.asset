@@ -8,6 +8,7 @@ TagManager:
   - Ship
   - Enemy
   - Job
+  - Gambling
   layers:
   - Default
   - TransparentFX

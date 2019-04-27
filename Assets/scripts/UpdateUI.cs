@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UpdateUI : MonoBehaviour
 {
+    public float reloadGameTime = 5.0f;
+    public Scene myReloadScene;
     public GameObject gameFinish;
     public GameObject moneyText;
     public GameObject playerObject;
@@ -31,6 +34,7 @@ public class UpdateUI : MonoBehaviour
         {
             // Game Over!
             gameFinish.GetComponent<Text>().text = "GAME OVER";
+            Invoke("reloadLevel", reloadGameTime);
         }
 
         //Handle ship leaving
@@ -40,10 +44,12 @@ public class UpdateUI : MonoBehaviour
             if(playerObject.GetComponent<PlayerStatus>().playerInShip == true)
             {
                 gameFinish.GetComponent<Text>().text = "YOU ESCAPED!";
+                Invoke("reloadLevel", reloadGameTime);
             }
             else
             {
                 gameFinish.GetComponent<Text>().text = "THE SHIP LEFT!?";
+                Invoke("reloadLevel", reloadGameTime);
             }
         }
 
@@ -51,5 +57,12 @@ public class UpdateUI : MonoBehaviour
         distanceToShip = Vector3.Distance(playerObject.transform.position, shipObject.transform.position);
         shipDistanceText.GetComponent<Text>().text = distanceToShip.ToString("0.0");
 
+    }
+
+
+    void reloadLevel()
+    {
+        Scene scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.name);
     }
 }

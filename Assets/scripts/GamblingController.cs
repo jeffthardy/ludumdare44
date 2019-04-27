@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JobController : MonoBehaviour
+public class GamblingController : MonoBehaviour
 {
     public GameObject player;
 
     private bool available = false;
-    private bool jobUsed = false;
-    public float jobPayment = 10.0f;
+    private bool gameUsed = false;
+    public float gamePayment = 100.0f;
+    public float gameCost = 10.0f;
+
 
     // Start is called before the first frame update
     void Start()
@@ -22,14 +24,26 @@ public class JobController : MonoBehaviour
 
     }
 
-    public void UseJob()
+    public void UseGame()
     {
         if (available)
         {
             // Player leaves world and wins?
-            jobUsed = true;
+            gameUsed = true;
             //Debug.Log("Job Used!");
-            player.gameObject.GetComponent<PlayerStatus>().modifyMoney(jobPayment);
+            player.gameObject.GetComponent<PlayerStatus>().modifyMoney(-gameCost);
+
+            // Decide if we win and only then pay out
+            int number = (int)Random.Range(0, 101);
+            if (number >= 50)
+            {
+                Debug.Log("You won game!");
+                player.gameObject.GetComponent<PlayerStatus>().modifyMoney(gamePayment);
+            }
+            else
+            {
+                Debug.Log("You lost game!");
+            }
         }
         else
         {
@@ -39,7 +53,7 @@ public class JobController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Job Boarding Entered!");
+        Debug.Log("Game Boarding Entered!");
 
         if (other.gameObject.tag == "Player")
         {
@@ -50,7 +64,7 @@ public class JobController : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
 
-        Debug.Log("Job Boarding Exited!");
+        Debug.Log("Game Boarding Exited!");
 
         if (other.gameObject.tag == "Player")
         {
