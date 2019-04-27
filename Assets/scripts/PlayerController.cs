@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour
     // Colliders we might be able to use
     private bool shipIsAvailable;
     private Collider shipCollision;
+    private bool jobIsAvailable;
+    private Collider jobCollision;
 
     void Start()
     {
@@ -45,7 +47,7 @@ public class PlayerController : MonoBehaviour
 
             // Attempt to use areas that are behind character
             float moveVertical = Input.GetAxis("Vertical");
-            if(moveVertical > 0)
+            if (moveVertical > 0)
             {
                 Debug.Log("Attempting to use Object!");
                 if (shipIsAvailable)
@@ -58,10 +60,15 @@ public class PlayerController : MonoBehaviour
                         this.GetComponent<PlayerStatus>().playerInShip = true;
                         Debug.Log("WE entered ship and used it!");
                         playerModel.GetComponent<MeshRenderer>().enabled = false;
-                    } else
+                    }
+                    else
                     {
                         //Ship is ignoring us
                     }
+                }
+                if (jobIsAvailable)
+                {
+                    jobCollision.gameObject.GetComponent<JobController>().useJob();
                 }
             }
         }
@@ -84,6 +91,19 @@ public class PlayerController : MonoBehaviour
             shipIsAvailable = true;
             shipCollision = other;
         }
+
+        if (other.gameObject.tag == "Job")
+        {
+            Debug.Log("PlayerController detected job!");
+            jobIsAvailable = true;
+            jobCollision = other;
+        }
+
+
+        if (other.gameObject.tag == "Enemy")
+        {
+            Debug.Log("PlayerController detected Enemy!");
+        }
     }
 
     void OnTriggerExit(Collider other)
@@ -94,6 +114,12 @@ public class PlayerController : MonoBehaviour
             Debug.Log("PlayerController detected leaving ship!");
             shipIsAvailable = false;
             shipCollision = null;
+        }
+        if (other.gameObject.tag == "Job")
+        {
+            Debug.Log("PlayerController detected leaving job!");
+            jobIsAvailable = false;
+            jobCollision = null;
         }
     }
 

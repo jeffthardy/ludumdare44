@@ -9,11 +9,16 @@ public class UpdateUI : MonoBehaviour
     public GameObject moneyText;
     public GameObject playerObject;
     public GameObject shipObject;
+    public GameObject shipDistanceText;
+
+    private float distanceToShip;
     // Start is called before the first frame update
     void Start()
     {
         moneyText.GetComponent<Text>().text = "$" + playerObject.GetComponent<PlayerStatus>().getMoneyLevel().ToString("0.00");
         gameFinish.GetComponent<Text>().text = "";
+        distanceToShip = Vector3.Distance(playerObject.transform.position, shipObject.transform.position);
+        shipDistanceText.GetComponent<Text>().text = distanceToShip.ToString("0.0");
     }
 
     // Update is called once per frame
@@ -41,5 +46,10 @@ public class UpdateUI : MonoBehaviour
                 gameFinish.GetComponent<Text>().text = "THE SHIP LEFT!?";
             }
         }
+
+        // Update distance to ship from player
+        distanceToShip = Vector3.Distance(playerObject.transform.position, shipObject.transform.position);
+        shipDistanceText.GetComponent<Text>().text = distanceToShip.ToString("0.0");
+
     }
 }

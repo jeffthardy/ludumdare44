@@ -5,7 +5,10 @@ using UnityEngine;
 public class PlayerStatus : MonoBehaviour
 {
     public float initialMoney;
+    public float invulerableTime = 3.0f;
+
     private float money;
+    private bool invulerable = false;
     public bool playerInShip = false;
 
     // Start is called before the first frame update
@@ -16,10 +19,28 @@ public class PlayerStatus : MonoBehaviour
 
     public void modifyMoney(float change)
     {
-        money += change;
+        if((invulerable == true) && (change < 0))
+        {
+            //ignore
+
+        }
+        else
+            money += change;
+
         // Dont allow random negatives when dying
         if (money < 0)
             money = 0;
+    }
+
+    public void inflictDamage()
+    {
+        invulerable = true;
+        Invoke("ClearInvulerable", invulerableTime);
+    }
+
+    private void ClearInvulerable()
+    {
+        invulerable = false;
     }
 
     public float getMoneyLevel()
