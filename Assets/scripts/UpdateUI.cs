@@ -20,6 +20,7 @@ public class UpdateUI : MonoBehaviour
     public GameObject scoreText;
 
 
+
     private bool saveTombstone = false;
 
     private float distanceToShip;
@@ -32,6 +33,7 @@ public class UpdateUI : MonoBehaviour
         shipDistanceText.GetComponent<Text>().text = distanceToShip.ToString("0.0");
         workHoursText.GetComponent<Text>().text = "0";
         gamblingCountText.GetComponent<Text>().text = "0";
+        
     }
 
     // Update is called once per frame
@@ -42,6 +44,7 @@ public class UpdateUI : MonoBehaviour
         // Handle game loss situation (no money)
         if(playerObject.GetComponent<PlayerStatus>().getMoneyLevel() == 0)
         {
+            playerObject.GetComponent<PlayerController>().triggerDeath();
             // Game Over!
             gameFinish.GetComponent<Text>().text = "GAME OVER";
             saveTombstone = true;
@@ -54,6 +57,7 @@ public class UpdateUI : MonoBehaviour
             //If player is on ship, we win!
             if(playerObject.GetComponent<PlayerStatus>().playerInShip == true)
             {
+                playerObject.GetComponent<PlayerController>().triggerEscape();
                 gameFinish.GetComponent<Text>().text = "YOU ESCAPED!";
                 highscoreController.GetComponent<HighscoreController>().storeHighscore(playerObject.GetComponent<PlayerStatus>().getScore());
                 Invoke("reloadLevel", reloadGameTime);

@@ -28,15 +28,19 @@ public class PlayerController : MonoBehaviour
     // Stat tracking for using locations
     private bool  isWorking;
     public AudioClip jumpAudioData;
-    AudioSource jumpAudio;
+    public AudioClip workAudioData;
+    public AudioClip DeathAudioData;
+    public AudioClip EscapeAudioData;
+    public AudioClip gameAudioData;
+    AudioSource Audio;
     //private float jobTime;
-
+    private bool playedFinish = false;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         isWorking = false;
-        jumpAudio = this.GetComponent<AudioSource>();
-        jumpAudio.clip = jumpAudioData;
+        Audio = this.GetComponent<AudioSource>();
+        Audio.clip = jumpAudioData;
 
     }
 
@@ -56,7 +60,10 @@ public class PlayerController : MonoBehaviour
             {
                 rb.AddForce(jump * jumpForce, ForceMode.Impulse);
                 isGrounded = false;
-                jumpAudio.Play(0);
+
+                Audio.Pause();
+                Audio.clip = jumpAudioData;
+                Audio.Play(0);
             }
                                           
 
@@ -83,6 +90,12 @@ public class PlayerController : MonoBehaviour
                 }
                 if (jobIsAvailable)
                 {
+                    if (!Audio.isPlaying)
+                    {
+                        Audio.clip = workAudioData;
+                        Audio.Play(0);
+                    }
+
                     if (!isWorking)
                     {
                         //jobTime = 0;
@@ -95,12 +108,23 @@ public class PlayerController : MonoBehaviour
                 }
                 if (gameIsAvailable)
                 {
+                    if (!Audio.isPlaying)
+                    {
+                        Audio.clip = gameAudioData;
+                        Audio.Play(0);
+                    }
+
                     gameCollision.gameObject.GetComponent<GamblingController>().UseGame();
                     this.gameObject.GetComponent<PlayerStatus>().logBet();
                 }
             }
             else
             {
+                if (isGrounded)
+                {
+                    // WE aren't using something or jumping, so kill any audio
+                    Audio.Pause();
+                }
                 //If we stopped working we should record our time worked
                 if (isWorking)
                 {
@@ -121,7 +145,7 @@ public class PlayerController : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("PlayerController TriggerEnter! " + other.gameObject.tag);
+        //Debug.Log("PlayerController TriggerEnter! " + other.gameObject.tag);
 
         if (other.gameObject.tag == "Ship")
         {
@@ -151,9 +175,29 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void triggerDeath()
+    {
+        if (!Audio.isPlaying && !playedFinish)
+        {
+            Audio.clip = DeathAudioData;
+            Audio.Play(0);
+            playedFinish = true;
+        }
+
+    }
+    public void triggerEscape()
+    {
+        if (!Audio.isPlaying && !playedFinish)
+        {
+            Audio.clip = EscapeAudioData;
+            Audio.Play(0);
+            playedFinish = true;
+        }
+    }
+
     void OnTriggerExit(Collider other)
     {
-        Debug.Log("PlayerController TriggerExit! " + other.gameObject.tag);
+        //Debug.Log("PlayerController TriggerExit! " + other.gameObject.tag);
         if (other.gameObject.tag == "Ship")
         {
             //Debug.Log("PlayerController detected leaving ship!");

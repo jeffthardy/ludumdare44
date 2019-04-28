@@ -11,11 +11,19 @@ public class WorldController : MonoBehaviour
     private Rigidbody playerRB;
     private PlayerStatus myPlayerStatus;
 
+
+    public AudioClip StartingAudioData;
+    AudioSource Audio;
+
     // Start is called before the first frame update
     void Start()
     {
         playerRB = player.GetComponent<Rigidbody>();
         Invoke("playerMoneyDrainer", 1.0f);
+
+        Audio = this.GetComponent<AudioSource>();
+        Audio.clip = StartingAudioData;
+        Audio.Play(0);
     }
 
     // Update is called once per frame

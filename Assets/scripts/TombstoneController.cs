@@ -28,8 +28,9 @@ public class TombstoneController : MonoBehaviour
                 float y = PlayerPrefs.GetFloat(key);
                 key = "tombstone" + tombstoneID + "z";
                 float z = PlayerPrefs.GetFloat(key);
-                Debug.Log("Loading : "+ x + ", " + y + ", " + z);
-                TombstoneModels[tombstoneID].transform.localPosition = new Vector3(x, y, z);
+                //Debug.Log("Loading : "+ x + ", " + y + ", " + z);
+                //FIXME loading all y locations to 0 so it sits even with ground
+                TombstoneModels[tombstoneID].transform.localPosition = new Vector3(x, 0, z);
                 tombstoneID += 1;
             }
             else
