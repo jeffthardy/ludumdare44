@@ -27,16 +27,22 @@ public class PlayerController : MonoBehaviour
 
     // Stat tracking for using locations
     private bool  isWorking;
+    public AudioClip jumpAudioData;
+    AudioSource jumpAudio;
     //private float jobTime;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         isWorking = false;
+        jumpAudio = this.GetComponent<AudioSource>();
+        jumpAudio.clip = jumpAudioData;
+
     }
 
-    void Update()
+    void FixedUpdate()
     {
+        
         if (alive && canMove)
         {
             // Handle normal sideways movement
@@ -50,6 +56,7 @@ public class PlayerController : MonoBehaviour
             {
                 rb.AddForce(jump * jumpForce, ForceMode.Impulse);
                 isGrounded = false;
+                jumpAudio.Play(0);
             }
                                           
 

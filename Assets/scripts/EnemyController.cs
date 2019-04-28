@@ -7,9 +7,22 @@ public class EnemyController : MonoBehaviour
     public float speed;
     public float hitCost = 100.0f;
 
+    //Linear scale volume based on distance
+
+
     private bool isGrounded;
     private Rigidbody rb;
     private int directive;
+    private float moveHorizontal = 0;
+
+    public AudioClip StaticAudioData;
+    public AudioClip HitAudioData;
+    AudioSource Audio;
+    private GameObject listener;
+    public float volumeDistance;
+    public float maxVolume=1.0f;
+    private float listenerDistance;
+
 
     // Start is called before the first frame update
     void Start()
@@ -19,21 +32,52 @@ public class EnemyController : MonoBehaviour
         Invoke("SetDirective", 2);
         directive = 0;
 
+        Audio = this.GetComponent<AudioSource>();
+        Audio.clip = StaticAudioData;
+
+        // Find player, which has audio listener attached to child camera
+        listener = FindObjectOfType<AudioListener>().GetComponentInParent<PlayerController>().gameObject;
+
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        float moveHorizontal = 0;
+        float volume;
+        listenerDistance = Vector3.Distance(listener.transform.position, gameObject.transform.position);
+        if (listenerDistance > volumeDistance)
+            volume = 0;
+        else
+        {
+            volume = maxVolume * ((volumeDistance - listenerDistance) / volumeDistance);
+            //Debug.Log("listenerDistance: " + listenerDistance);
+            //Debug.Log("volume: " + volume);
+        }
+        Audio.volume = volume;
+
         switch (directive)
         {
             case 0: // Hang out
+                if (moveHorizontal != 0)
+                    Audio.Pause();
                 moveHorizontal = 0.0f;
                 break;
             case 1: // move left
+                if ((moveHorizontal == 0) || (!Audio.isPlaying))
+                {
+                    Audio.clip = StaticAudioData;
+                    Audio.loop = true;
+                    Audio.Play(0);
+                }
                 moveHorizontal = -20.0f;
                 break;
             case 2: // move right
+                if ((moveHorizontal == 0) || (!Audio.isPlaying))
+                {
+                    Audio.clip = StaticAudioData;
+                    Audio.loop = true;
+                    Audio.Play(0);
+                }
                 moveHorizontal = 20.0f;
                 break;
             default:  //unsure
@@ -62,6 +106,10 @@ public class EnemyController : MonoBehaviour
         {
             //Debug.Log("EnemyController detected player!");
             other.gameObject.GetComponent<PlayerStatus>().inflictDamage(hitCost);
+            Audio.Pause();
+            Audio.loop = false;
+            Audio.clip = HitAudioData;
+            Audio.Play(0);
         }
 
         if (directive == 1)

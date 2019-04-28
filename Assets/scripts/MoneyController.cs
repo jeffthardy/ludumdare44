@@ -4,11 +4,18 @@ using UnityEngine;
 
 public class MoneyController : MonoBehaviour
 {
+    public GameObject model;
+    public AudioClip jumpAudioData;
+    AudioSource jumpAudio;
+
+    private bool used = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        jumpAudio = this.GetComponent<AudioSource>();
+        jumpAudio.clip = jumpAudioData;
+
     }
 
     // Update is called once per frame
@@ -20,12 +27,17 @@ public class MoneyController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         //Debug.Log("Money Collision!");
-
-        if (other.gameObject.tag == "Player")
+        if (!used)
         {
-            other.gameObject.GetComponent<PlayerStatus>().modifyMoney(100);
-            //Destroy object after picked up
-            Destroy(transform.gameObject);            
+            if (other.gameObject.tag == "Player")
+            {
+                other.gameObject.GetComponent<PlayerStatus>().modifyMoney(100);
+                used = true;
+                jumpAudio.Play(0);
+                //Destroy object after picked up
+                model.gameObject.GetComponent<MeshRenderer>().enabled = false;
+                //Destroy(transform.gameObject);            
+            }
         }
     }
     
