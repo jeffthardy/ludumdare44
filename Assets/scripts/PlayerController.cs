@@ -46,7 +46,11 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        
+        if (Input.GetKey("escape"))
+        {
+            Application.Quit();
+        }
+
         if (alive && canMove)
         {
             // Handle normal sideways movement
