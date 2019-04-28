@@ -8,15 +8,19 @@ public class PlayerStatus : MonoBehaviour
     public float invulerableTime = 3.0f;
 
     private float money;
+    private float score;
     private bool invulerable = false;
     public bool playerInShip = false;
 
     private float timeWorked = 0;
+    private int gamesPlayed;
 
     // Start is called before the first frame update
     void Start()
     {
-        money = initialMoney;        
+        money = initialMoney;
+        gamesPlayed = 0;
+        score = 0;
     }
 
     // General money modifiers such as movement, time, etc use this 
@@ -37,7 +41,7 @@ public class PlayerStatus : MonoBehaviour
     }
 
     // Might be needed for stats
-    public float getWorkTime(float time)
+    public float getWorkTime()
     {
         return timeWorked;
     }
@@ -65,10 +69,28 @@ public class PlayerStatus : MonoBehaviour
         return money;
     }
 
+    // Just in case something needs to know how much money we have
+    public float getScore()
+    {
+        return score;
+    }
+    
+
+    // Track time spent at job locations earning money
+    public void logBet()
+    {
+        gamesPlayed += 1;
+    }
+    // Track time spent at job locations earning money
+    public int getBetCount()
+    {
+        return gamesPlayed;
+    }
+
     // Update is called once per frame
     void Update()
     {
-        
+        score = money + (1000000 / Time.timeSinceLevelLoad);
     }
 
 

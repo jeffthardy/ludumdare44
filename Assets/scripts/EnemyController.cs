@@ -56,11 +56,11 @@ public class EnemyController : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("EnemyController TriggerEnter!");
+        //Debug.Log("EnemyController TriggerEnter!");
 
         if (other.gameObject.tag == "Player")
         {
-            Debug.Log("EnemyController detected player!");
+            //Debug.Log("EnemyController detected player!");
             other.gameObject.GetComponent<PlayerStatus>().inflictDamage(hitCost);
         }
 

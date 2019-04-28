@@ -19,7 +19,7 @@ public class MoneyController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Money Collision!");
+        //Debug.Log("Money Collision!");
 
         if (other.gameObject.tag == "Player")
         {

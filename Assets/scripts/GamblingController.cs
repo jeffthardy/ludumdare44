@@ -35,7 +35,7 @@ public class GamblingController : MonoBehaviour
 
             // Decide if we win and only then pay out
             int number = (int)Random.Range(0, 101);
-            if (number >= 50)
+            if (number >= 88)
             {
                 Debug.Log("You won game!");
                 player.gameObject.GetComponent<PlayerStatus>().modifyMoney(gamePayment);

@@ -27,13 +27,11 @@ public class PlayerController : MonoBehaviour
 
     // Stat tracking for using locations
     private bool  isWorking;
-    private float jobTime;
-    private float gamesPlayed;
+    //private float jobTime;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        gamesPlayed = 0;
         isWorking = false;
     }
 
@@ -79,16 +77,19 @@ public class PlayerController : MonoBehaviour
                 if (jobIsAvailable)
                 {
                     if (!isWorking)
-                        jobTime = 0;
+                    {
+                        //jobTime = 0;
+                    }
                     else
-                        jobTime += Time.deltaTime;
+                        this.gameObject.GetComponent<PlayerStatus>().logWorkTime(Time.deltaTime);
+                    //jobTime += Time.deltaTime;
                     isWorking = true;
                     jobCollision.gameObject.GetComponent<JobController>().UseJob();
                 }
                 if (gameIsAvailable)
                 {
                     gameCollision.gameObject.GetComponent<GamblingController>().UseGame();
-                    gamesPlayed += 1;
+                    this.gameObject.GetComponent<PlayerStatus>().logBet();
                 }
             }
             else
@@ -97,8 +98,8 @@ public class PlayerController : MonoBehaviour
                 if (isWorking)
                 {
                     isWorking = false;
-                    jobTime += Time.deltaTime;
-                    this.gameObject.GetComponent<PlayerStatus>().logWorkTime(jobTime);
+                    //jobTime += Time.deltaTime;
+                    this.gameObject.GetComponent<PlayerStatus>().logWorkTime(Time.deltaTime);
                 }
             }
         }
@@ -113,25 +114,25 @@ public class PlayerController : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("PlayerController TriggerEnter!");
+        Debug.Log("PlayerController TriggerEnter! " + other.gameObject.tag);
 
         if (other.gameObject.tag == "Ship")
         {
-            Debug.Log("PlayerController detected ship!");
+            //Debug.Log("PlayerController detected ship!");
             shipIsAvailable = true;
             shipCollision = other;
         }
 
         if (other.gameObject.tag == "Job")
         {
-            Debug.Log("PlayerController detected job!");
+            //Debug.Log("PlayerController detected job!");
             jobIsAvailable = true;
             jobCollision = other;
         }
 
         if (other.gameObject.tag == "Gambling")
         {
-            Debug.Log("PlayerController detected gambling!");
+            //Debug.Log("PlayerController detected gambling!");
             gameIsAvailable = true;
             gameCollision = other;
         }
@@ -139,28 +140,28 @@ public class PlayerController : MonoBehaviour
 
         if (other.gameObject.tag == "Enemy")
         {
-            Debug.Log("PlayerController detected Enemy!");
+            //Debug.Log("PlayerController detected Enemy!");
         }
     }
 
     void OnTriggerExit(Collider other)
     {
-        Debug.Log("PlayerController TriggerExit!");
+        Debug.Log("PlayerController TriggerExit! " + other.gameObject.tag);
         if (other.gameObject.tag == "Ship")
         {
-            Debug.Log("PlayerController detected leaving ship!");
+            //Debug.Log("PlayerController detected leaving ship!");
             shipIsAvailable = false;
             shipCollision = null;
         }
         if (other.gameObject.tag == "Job")
         {
-            Debug.Log("PlayerController detected leaving job!");
+            //Debug.Log("PlayerController detected leaving job!");
             jobIsAvailable = false;
             jobCollision = null;
         }
         if (other.gameObject.tag == "Gambling")
         {
-            Debug.Log("PlayerController detected leaving Gambling!");
+            //Debug.Log("PlayerController detected leaving Gambling!");
             gameIsAvailable = false;
             gameCollision = null;
         }
