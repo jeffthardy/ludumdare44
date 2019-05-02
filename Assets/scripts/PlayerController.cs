@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     public bool alive = true;
     public bool canMove = true;
     public float speed;
+    public float maxSpeed;
     public float horizontalMoveRate;
     public float upMoveRate;
     public Vector3 jump;
@@ -69,7 +70,10 @@ public class PlayerController : MonoBehaviour
                 Audio.clip = jumpAudioData;
                 Audio.Play(0);
             }
-                                          
+
+            // Fix max horzSpeed, which also comes into play when jumping
+            if (Mathf.Abs(rb.velocity.x) > maxSpeed)
+                rb.velocity = new Vector2(Mathf.Sign(rb.velocity.x) * maxSpeed, rb.velocity.y);
 
             // Attempt to use areas that are behind character
             float moveVertical = Input.GetAxis("Vertical");

@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class WorldController : MonoBehaviour
 {
+    public float moneyDecayRate = (float)-1.0;
     public bool enableDebug = false;
     public GameObject player;
     public float moveThreshold;
@@ -42,7 +43,8 @@ public class WorldController : MonoBehaviour
         // Reduce money if moving faster than minimum rate
         if ((Math.Abs(playerRB.velocity.x) >= moveThreshold) || (Math.Abs(playerRB.velocity.y) >= moveThreshold) || (Math.Abs(playerRB.velocity.z) >= moveThreshold))
         {
-            player.GetComponent<PlayerStatus>().modifyMoney(-1);
+            double velocity_mag = Math.Abs(playerRB.velocity.magnitude);
+            player.GetComponent<PlayerStatus>().modifyMoney(moneyDecayRate* (float)velocity_mag);
             if(enableDebug)
                 Debug.Log("Money:" + player.GetComponent<PlayerStatus>().getMoneyLevel());
         }
