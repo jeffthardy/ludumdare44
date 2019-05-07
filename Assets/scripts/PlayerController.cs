@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour
     private Collider gameCollision;
 
 
+
     // Stat tracking for using locations
     private bool  isWorking;
     public AudioClip jumpAudioData;
@@ -47,6 +48,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+
         if (Input.GetKey("escape"))
         {
             Application.Quit();
@@ -54,6 +56,7 @@ public class PlayerController : MonoBehaviour
 
         if (alive && canMove)
         {
+
             // Handle normal sideways movement
             float moveHorizontal = Input.GetAxis("Horizontal") * horizontalMoveRate;
             Vector3 movement = new Vector3(moveHorizontal, 0.0f, 0.0f);
@@ -143,6 +146,48 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        // Display movement particles as needed
+        handleParticleDisplay();
+
+    }
+
+    //Particle controller
+    public ParticleSystem moveParticles;
+    public float maxParticleLifetime = 0.7f;
+
+    void handleParticleDisplay()
+    {
+        if (Mathf.Abs(rb.velocity.x) >0.1)
+        {
+            if (moveParticles.isStopped)
+                moveParticles.Play();
+
+            var main = moveParticles.main;
+            main.startLifetime = maxParticleLifetime * (Mathf.Abs(rb.velocity.x) / maxSpeed);
+
+
+            Vector3 rotation = moveParticles.transform.eulerAngles;
+            if (rb.velocity.x < 0)
+            {
+                Vector3 target = new Vector3(rotation.x, 90, rotation.z);
+                if (rotation != target)
+                    moveParticles.transform.eulerAngles = target;
+            }
+            else
+            {
+                Vector3 target = new Vector3(rotation.x, -90, rotation.z);
+                if (rotation != target)
+                    moveParticles.transform.eulerAngles = target;
+
+            }
+        }
+        else
+        {
+            var main = moveParticles.main;
+            main.startLifetime = 0;
+            if (moveParticles.isPlaying)
+                moveParticles.Stop();
+        }
     }
 
     void OnCollisionStay()
