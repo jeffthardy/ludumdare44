@@ -13,9 +13,12 @@ public class PlayerController : MonoBehaviour
     public float upMoveRate;
     public Vector3 jump;
     public float jumpForce = 2.0f;
+    public int extraJumps=1;
 
     private bool isGrounded;
     private Rigidbody rb;
+    private int extraJumpCount;
+    private bool jumpHeldDown;
 
     // Colliders we might be able to use
     private bool shipIsAvailable;
@@ -43,6 +46,7 @@ public class PlayerController : MonoBehaviour
         isWorking = false;
         Audio = this.GetComponent<AudioSource>();
         Audio.clip = jumpAudioData;
+        extraJumpCount = 0;
 
     }
 
@@ -64,14 +68,37 @@ public class PlayerController : MonoBehaviour
 
 
             // Handle Jumping
-            if (Input.GetButtonDown("Jump") && isGrounded)
+            if (Input.GetButtonDown("Jump") && !jumpHeldDown)
             {
-                rb.AddForce(jump * jumpForce, ForceMode.Impulse);
-                isGrounded = false;
+                if (isGrounded)
+                {
+                    extraJumpCount = extraJumps;
+                    rb.AddForce(jump * jumpForce, ForceMode.Impulse);
+                    isGrounded = false;
 
-                Audio.Pause();
-                Audio.clip = jumpAudioData;
-                Audio.Play(0);
+                    Audio.Pause();
+                    Audio.clip = jumpAudioData;
+                    Audio.Play(0);
+
+                } else
+                {
+                    if(extraJumpCount > 0)
+                    {
+                        extraJumpCount--;
+                        rb.velocity = new Vector3(0, 0, 0);
+                        rb.AddForce(jump * jumpForce, ForceMode.Impulse);
+                        isGrounded = false;
+
+                        Audio.Pause();
+                        Audio.clip = jumpAudioData;
+                        Audio.Play(0);
+
+                    }
+                }
+                jumpHeldDown = true;
+            } else
+            {
+                jumpHeldDown = false;
             }
 
             // Fix max horzSpeed, which also comes into play when jumping
@@ -157,36 +184,54 @@ public class PlayerController : MonoBehaviour
 
     void handleParticleDisplay()
     {
-        if (Mathf.Abs(rb.velocity.x) >0.1)
+        if (isGrounded)
         {
+            if (Mathf.Abs(rb.velocity.x) > 0.1)
+            {
+                if (moveParticles.isStopped)
+                    moveParticles.Play();
+
+                var main = moveParticles.main;
+                main.startLifetime = maxParticleLifetime * (Mathf.Abs(rb.velocity.x) / maxSpeed);
+
+
+                Vector3 rotation = moveParticles.transform.eulerAngles;
+                if (rb.velocity.x < 0)
+                {
+                    Vector3 target = new Vector3(-45, 90, rotation.z);
+                    if (rotation != target)
+                        moveParticles.transform.eulerAngles = target;
+                }
+                else
+                {
+                    Vector3 target = new Vector3(-45, -90, rotation.z);
+                    if (rotation != target)
+                        moveParticles.transform.eulerAngles = target;
+
+                }
+            }
+            else
+            {
+                var main = moveParticles.main;
+                main.startLifetime = 0;
+                if (moveParticles.isPlaying)
+                    moveParticles.Stop();
+            }
+        } else
+        {
+            // Handle particles when in the air?
             if (moveParticles.isStopped)
                 moveParticles.Play();
 
             var main = moveParticles.main;
-            main.startLifetime = maxParticleLifetime * (Mathf.Abs(rb.velocity.x) / maxSpeed);
+            main.startLifetime = maxParticleLifetime * (Mathf.Abs(rb.velocity.y) / maxSpeed);
 
+            // Just drop particles down any time we are in the air... 
+            Vector3 rotation = moveParticles.transform.eulerAngles; 
+            Vector3 target = new Vector3(90, 0, rotation.z);
+            if (rotation != target)
+                moveParticles.transform.eulerAngles = target; 
 
-            Vector3 rotation = moveParticles.transform.eulerAngles;
-            if (rb.velocity.x < 0)
-            {
-                Vector3 target = new Vector3(rotation.x, 90, rotation.z);
-                if (rotation != target)
-                    moveParticles.transform.eulerAngles = target;
-            }
-            else
-            {
-                Vector3 target = new Vector3(rotation.x, -90, rotation.z);
-                if (rotation != target)
-                    moveParticles.transform.eulerAngles = target;
-
-            }
-        }
-        else
-        {
-            var main = moveParticles.main;
-            main.startLifetime = 0;
-            if (moveParticles.isPlaying)
-                moveParticles.Stop();
         }
     }
 
