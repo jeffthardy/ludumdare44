@@ -89,6 +89,19 @@ public class EnemyController : MonoBehaviour
         rb.AddForce(movement * speed);
     }
 
+
+    //Particle controller
+    public ParticleSystem collisionParticles;
+    public float maxParticleLifetime = 0.7f;
+
+    void HandleParticleEvents()
+    {
+        collisionParticles.transform.position = this.transform.position;
+        if (collisionParticles.isStopped)
+            collisionParticles.Play();
+    }
+
+
     private void SetDirective()
     {
         directive = (int)Random.Range(1, 3);
@@ -110,6 +123,7 @@ public class EnemyController : MonoBehaviour
             Audio.loop = false;
             Audio.clip = HitAudioData;
             Audio.Play(0);
+            HandleParticleEvents();
         }
 
         if (directive == 1)
