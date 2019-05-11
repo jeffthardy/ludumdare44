@@ -36,7 +36,7 @@ public class EnemyController : MonoBehaviour
         Audio.clip = StaticAudioData;
 
         // Find player, which has audio listener attached to child camera
-        listener = FindObjectOfType<AudioListener>().GetComponentInParent<PlayerController>().gameObject;
+        listener = FindObjectOfType<PlayerController>().gameObject;
 
     }
 

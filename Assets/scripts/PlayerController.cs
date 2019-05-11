@@ -50,26 +50,45 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    void FixedUpdate()
-    {
+    private float horizontalInput;
+    private float verticalInput;
+    private float pendingJumps=0;
 
+    private void Update()
+    {
         if (Input.GetKey("escape"))
         {
             Application.Quit();
         }
+        horizontalInput = Input.GetAxis("Horizontal");
+        verticalInput = Input.GetAxis("Vertical");
+
+        if (Input.GetButtonDown("Jump") && !jumpHeldDown)
+        {
+            jumpHeldDown = true;
+            pendingJumps++;
+        }
+        else
+        {
+            jumpHeldDown = false;
+        }
+    }
+
+        void FixedUpdate()
+    {
 
         if (alive && canMove)
         {
 
             // Handle normal sideways movement
-            float moveHorizontal = Input.GetAxis("Horizontal") * horizontalMoveRate;
+            float moveHorizontal = horizontalInput * horizontalMoveRate;
             Vector3 movement = new Vector3(moveHorizontal, 0.0f, 0.0f);
             rb.AddForce(movement * speed);
 
-
-            // Handle Jumping
-            if (Input.GetButtonDown("Jump") && !jumpHeldDown)
+            // Handle Jump Input
+            if(pendingJumps>0)
             {
+                pendingJumps=0;
                 if (isGrounded)
                 {
                     extraJumpCount = extraJumps;
@@ -80,9 +99,10 @@ public class PlayerController : MonoBehaviour
                     Audio.clip = jumpAudioData;
                     Audio.Play(0);
 
-                } else
+                }
+                else
                 {
-                    if(extraJumpCount > 0)
+                    if (extraJumpCount > 0)
                     {
                         extraJumpCount--;
                         rb.velocity = new Vector3(0, 0, 0);
@@ -95,10 +115,6 @@ public class PlayerController : MonoBehaviour
 
                     }
                 }
-                jumpHeldDown = true;
-            } else
-            {
-                jumpHeldDown = false;
             }
 
             // Fix max horzSpeed, which also comes into play when jumping
@@ -106,7 +122,7 @@ public class PlayerController : MonoBehaviour
                 rb.velocity = new Vector2(Mathf.Sign(rb.velocity.x) * maxSpeed, rb.velocity.y);
 
             // Attempt to use areas that are behind character
-            float moveVertical = Input.GetAxis("Vertical");
+            float moveVertical = verticalInput;
             if (moveVertical > 0)
             {
                 //Debug.Log("Attempting to use Object!");
@@ -235,9 +251,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnCollisionStay()
+    void OnCollisionStay(Collision collisionInfo)
     {
-        if (!isGrounded && rb.velocity.y <= 0)
+        if (!isGrounded && (rb.velocity.y <= 0) && (collisionInfo.collider.gameObject.tag == "Ground"))
             isGrounded = true;
     }
 
