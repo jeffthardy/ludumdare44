@@ -48,7 +48,7 @@ public class UpdateUI : MonoBehaviour
             // Game Over!
             gameFinish.GetComponent<Text>().text = "GAME OVER";
             saveTombstone = true;
-            Invoke("reloadLevel", reloadGameTime);
+            Invoke("loadNextLevel", reloadGameTime);
         }
 
         //Handle ship leaving
@@ -60,13 +60,13 @@ public class UpdateUI : MonoBehaviour
                 playerObject.GetComponent<PlayerController>().triggerEscape();
                 gameFinish.GetComponent<Text>().text = "YOU ESCAPED!";
                 highscoreController.GetComponent<HighscoreController>().storeHighscore(playerObject.GetComponent<PlayerStatus>().getScore());
-                Invoke("reloadLevel", reloadGameTime);
+                Invoke("loadNextLevel", reloadGameTime);
             }
             else
             {
                 gameFinish.GetComponent<Text>().text = "THE SHIP LEFT!?";
                 saveTombstone = true;
-                Invoke("reloadLevel", reloadGameTime);
+                Invoke("loadNextLevel", reloadGameTime);
             }
         }
 
@@ -89,12 +89,13 @@ public class UpdateUI : MonoBehaviour
     }
 
 
-    void reloadLevel()
+    void loadNextLevel()
     {
         if(saveTombstone)
             tombstoneController.GetComponent<TombstoneController>().storeTombstone(playerObject.transform.position);
 
-        Scene scene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(scene.name);
+        //Scene scene = SceneManager.GetActiveScene();
+        //SceneManager.LoadScene(scene.name);
+        SceneManager.LoadScene("Menu");
     }
 }
