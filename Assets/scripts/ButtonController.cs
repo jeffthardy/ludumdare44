@@ -7,20 +7,57 @@ using UnityEngine.SceneManagement;
 public class ButtonController : MonoBehaviour
 {
     //Make sure to attach these Buttons in the Inspector
-    public Button m_YourFirstButton;
+    public Button m_StartButton;
+    public Button m_AboutButton;
+    public Button m_QuitButton;
+    public Button m_MenuButton;
+
+
+    //#if UNITY_WEBPLAYER
+    //     public static string webplayerQuitURL = "http://google.com";
+    //#endif
 
     // Start is called before the first frame update
     void Start()
     {
-        m_YourFirstButton.onClick.AddListener(TaskOnClick);
-
+        if(m_StartButton)
+            m_StartButton.onClick.AddListener(StartOnClick);
+        if(m_AboutButton)
+            m_AboutButton.onClick.AddListener(AboutOnClick);
+        if(m_QuitButton)
+            m_QuitButton.onClick.AddListener(QuitOnClick);
+        if(m_MenuButton)
+            m_MenuButton.onClick.AddListener(MenuOnClick);
     }
 
-    void TaskOnClick()
+    void MenuOnClick()
     {
-        //Output this to console when Button1
+        Debug.Log("You have clicked the Menu button!");
+        SceneManager.LoadScene("Menu");
+    }
+
+    void StartOnClick()
+    {
         Debug.Log("You have clicked the start button!");
-        SceneManager.LoadScene("Level1");
+        SceneManager.LoadScene("Level1Intro");
+    }
+
+    void AboutOnClick()
+    {
+        Debug.Log("You have clicked the start button!");
+        SceneManager.LoadScene("About");
+    }
+
+    void QuitOnClick()
+    {
+        Debug.Log("You have clicked the quit button!");
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#elif UNITY_WEBPLAYER
+        //Application.OpenURL(webplayerQuitURL);
+#else
+        Application.Quit();
+#endif
 
     }
 }
