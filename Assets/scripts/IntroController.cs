@@ -5,17 +5,18 @@ using UnityEngine.SceneManagement;
 
 public class IntroController : MonoBehaviour
 {
+    public float fixedIntroTime = 3.0f;
+
     // Start is called before the first frame update
     void Start()
     {
-
         StartCoroutine(IntroPlayer());
 
     }
 
     IEnumerator IntroPlayer()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(fixedIntroTime);
         SceneManager.LoadScene("Level1");
     }
 }
