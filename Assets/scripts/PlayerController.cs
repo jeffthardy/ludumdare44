@@ -131,7 +131,10 @@ public class PlayerController : MonoBehaviour
                         canMove = false;
                         this.GetComponent<PlayerStatus>().playerInShip = true;
                         //Debug.Log("WE entered ship and used it!");
-                        playerModel.GetComponent<MeshRenderer>().enabled = false;
+                        MeshRenderer[] playerMeshes;
+                        playerMeshes = playerModel.GetComponentsInChildren<MeshRenderer>();
+                        foreach (MeshRenderer item in playerMeshes)
+                            item.enabled = false;
                     }
                     else
                     {

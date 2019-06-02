@@ -13,7 +13,7 @@ public class ButtonController : MonoBehaviour
     public Button m_MenuButton;
 
 
-    //#if UNITY_WEBPLAYER
+    //#if UNITY_WEBGL	
     //     public static string webplayerQuitURL = "http://google.com";
     //#endif
 
@@ -53,7 +53,7 @@ public class ButtonController : MonoBehaviour
         Debug.Log("You have clicked the quit button!");
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
-#elif UNITY_WEBPLAYER
+#elif UNITY_WEBGL	
         //Application.OpenURL(webplayerQuitURL);
 #else
         Application.Quit();
